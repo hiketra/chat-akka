@@ -20,9 +20,11 @@ import scala.reflect.ClassTag
 import Model._
 
 import com.tangent.util.Util.ZdtUtils._
+import com.tangent.util.Util._
 
 class ChatService(driver: Neo4jDriver) extends CirceSupport {
   val nDriver = driver.driver
+
 
   def createRootChannel(rootChannelRequest: RootChannelRequest) = {
     s"CREATE (m: Message:Channel ${rootChannelRequest.toMessage.toCypherObj}) RETURN m;".query[Message].single(nDriver.session)
@@ -45,9 +47,9 @@ class ChatService(driver: Neo4jDriver) extends CirceSupport {
   }
 
   def createNewChildChannel(childChannelRequest: ChildChannelRequest): Future[Message] = {
-   lazy val upgradeParentMessage = raw"""MATCH (newChannel: Message) WHERE newChannel.messageId = "${childChannelRequest.parentId}"
-         | SET newChannel += {hasChildren: true, channelDescription: ${childChannelRequest.channelDescription.fold("null")(s => raw""""$s"""")},
-         | channelSince: "${currentTime}", channelName: ${childChannelRequest.channelName.fold("null")(s => raw""""$s"""")}}
+   lazy val upgradeParentMessage = raw"""MATCH (newChannel: Message) WHERE newChannel.messageId = "${childChannelRequest.parentId.sanitiseUserStringInput}"
+         | SET newChannel += {hasChildren: true, channelDescription: ${childChannelRequest.channelDescription.fold("null")(s => raw""""${s.sanitiseUserStringInput}"""")},
+         | channelSince: "${currentTime}", channelName: ${childChannelRequest.channelName.fold("null")(s => raw""""${s.sanitiseUserStringInput}"""")}}
          | RETURN newChannel;
          |""".stripMargin.query[Message].single(nDriver.session)
     lazy val childMessage = createChildMessage(ChildMessageRequest(childChannelRequest.parentId,

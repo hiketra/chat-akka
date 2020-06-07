@@ -27,7 +27,6 @@ lazy val root = (project in file(".")).
       "org.scalatest"     %% "scalatest"                % "3.0.8",
 
       //third-party libs
-      "org.apache.commons" % "commons-collections4" % "4.1", //contains PatriciaTrie
       //json deserialising code
       "io.circe" %% "circe-parser" % "0.12.3",
       "io.circe" %% "circe-generic" % "0.12.3",

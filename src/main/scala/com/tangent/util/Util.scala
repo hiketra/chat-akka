@@ -11,6 +11,12 @@ object Util {
     def fromString(t: String): ZonedDateTime = ZonedDateTime.parse(t, formatter)
   }
 
+  implicit class Sanitiser(s: String) {
+    def sanitiseUserStringInput() = {
+      s.replace(raw""""""", raw"""\""")
+    }
+  }
+
   object CypherUtils {
 
     implicit class KVConversionBool(s: (String, Boolean)) {
@@ -18,10 +24,10 @@ object Util {
     }
 
     implicit class KVConversionString(s: (String, String)) {
-      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : "${s._2}"${if(!terminateObj) "," else ""}"""
+      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : "${s._2.sanitiseUserStringInput}"${if(!terminateObj) "," else ""}"""
     }
     implicit class KVOptString(s: (String, Option[String])) {
-      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : ${s._2.fold("null")(s => raw""" "$s" """)} ${if(!terminateObj) "," else ""} """
+      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : ${s._2.fold("null")(s => raw""" "${s.sanitiseUserStringInput}" """)} ${if(!terminateObj) "," else ""} """
     }
 
     implicit class KVOptBoolean(s: (String, Option[Boolean])) {

@@ -14,7 +14,7 @@ object Model {
 
 
     def toCypherObj = {
-      val s = raw"""
+      raw"""
                    | {
                    |  ${("subId", subId).toCyph()}
                    |  ${("timestamp", timestamp).toCyph()}
@@ -28,7 +28,6 @@ object Model {
                    |  ${("channelName", channelName).toCyph(true)}
                    | }
                    |""".stripMargin
-      s
     }
   }
 
