@@ -1,4 +1,4 @@
-lazy val akkaHttpVersion = "10.1.11"
+lazy val akkaHttpVersion = "10.1.12"
 lazy val akkaVersion    = "2.6.1"
 
 val circeVersion = "0.11.1"
@@ -25,6 +25,7 @@ lazy val root = (project in file(".")).
       "com.typesafe.akka" %% "akka-http-testkit"        % akkaHttpVersion % Test,
       "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion     % Test,
       "org.scalatest"     %% "scalatest"                % "3.0.8",
+     "ch.megard" %% "akka-http-cors" % "1.0.0",
 
       //third-party libs
       //json deserialising code

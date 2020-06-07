@@ -14,6 +14,7 @@ import com.typesafe.sslconfig.util.ConfigLoader
 
 import scala.concurrent.ExecutionContext.Implicits
 import scala.concurrent.duration._
+import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
 
 object ServiceBootstrap extends LazyLogging {
 
@@ -30,7 +31,7 @@ object ServiceBootstrap extends LazyLogging {
 
 
 
-    val concatRoutes = concat(chatRoutes)
+    val concatRoutes = concat(cors(){chatRoutes})
 
 
     val interface = "0.0.0.0"
