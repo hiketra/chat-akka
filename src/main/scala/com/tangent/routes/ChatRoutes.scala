@@ -2,14 +2,9 @@ package com.tangent.routes
 
 import akka.actor.ActorSystem
 import com.tangent.util.CirceSupport
-import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{ExceptionHandler, Route}
-import com.tangent.chat.{ChatService, ChildChannelRequest, ChildMessageRequest, Message, RootChannelRequest}
-import com.tangent.exceptions.FailureToRetrieveFileException
-import com.tangent.model.ErrorResponse
-import com.tangent.model.validationApi.ValidationRequest
-
+import com.tangent.chat.{ChatService}
+import com.tangent.chat.Model._
 class ChatRoutes (chatService: ChatService)(implicit val system: ActorSystem) extends CirceSupport{
 
   val routes = pathPrefix("message") {

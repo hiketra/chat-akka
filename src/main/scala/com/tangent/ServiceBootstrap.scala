@@ -24,12 +24,6 @@ object ServiceBootstrap extends LazyLogging {
 
     implicit lazy val timeout: Timeout = 10.seconds
 
-    val filesToScrape = if (args.length > 0) {
-      args(0).split(",").toList
-    } else {
-      ConfigFactory.load().getString("service.files").split(",").toList
-    }
-
     val neo4jDriver = new Neo4jDriver(Neo4jConfig(ConfigFactory.load().getConfig("service.neo4j")))
     val chatService = new ChatService(neo4jDriver)
     val chatRoutes = new ChatRoutes(chatService).routes
