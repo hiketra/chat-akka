@@ -15,6 +15,7 @@ import com.typesafe.sslconfig.util.ConfigLoader
 import scala.concurrent.ExecutionContext.Implicits
 import scala.concurrent.duration._
 import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
+import com.tangent.chat.UserService
 
 object ServiceBootstrap extends LazyLogging {
 
@@ -25,14 +26,14 @@ object ServiceBootstrap extends LazyLogging {
 
     implicit lazy val timeout: Timeout = 10.seconds
 
-    val neo4jDriver = new Neo4jDriver(Neo4jConfig(ConfigFactory.load().getConfig("service.neo4j")))
-    val chatService = new ChatService(neo4jDriver)
-    val chatRoutes = new ChatRoutes(chatService).routes
+    val neo4jDriver = new Neo4jDriver(
+      Neo4jConfig(ConfigFactory.load().getConfig("service.neo4j"))
+    )
+    val userService = new UserService(neo4jDriver)
+    val chatService = new ChatService(neo4jDriver, userService)
+    val chatRoutes = new ChatRoutes(chatService, userService).routes
 
-
-
-    val concatRoutes = concat(cors(){chatRoutes})
-
+    val concatRoutes = concat(cors() { chatRoutes })
 
     val interface = "0.0.0.0"
     val port = 8080

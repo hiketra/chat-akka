@@ -20,18 +20,37 @@ object Util {
   object CypherUtils {
 
     implicit class KVConversionBool(s: (String, Boolean)) {
-      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : ${s._2.toString}${if(!terminateObj) "," else ""}"""
+      def toCyph(terminateObj: Boolean = false) =
+        raw""" ${s._1} : ${s._2.toString}${if (!terminateObj) "," else ""}"""
     }
 
     implicit class KVConversionString(s: (String, String)) {
-      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : "${s._2.sanitiseUserStringInput}"${if(!terminateObj) "," else ""}"""
+      def toCyph(terminateObj: Boolean = false) =
+        raw""" ${s._1} : "${s._2.sanitiseUserStringInput}"${if (!terminateObj)
+          ","
+        else ""}"""
     }
     implicit class KVOptString(s: (String, Option[String])) {
-      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : ${s._2.fold("null")(s => raw""" "${s.sanitiseUserStringInput}" """)} ${if(!terminateObj) "," else ""} """
+      def toCyph(terminateObj: Boolean = false) =
+        raw""" ${s._1} : ${s._2.fold("null")(s =>
+          raw""" "${s.sanitiseUserStringInput}" """
+        )} ${if (!terminateObj) "," else ""} """
     }
 
     implicit class KVOptBoolean(s: (String, Option[Boolean])) {
-      def toCyph(terminateObj: Boolean = false) = raw""" ${s._1} : ${s._2.fold("null")(s => s.toString)}${if(!terminateObj) "," else ""}"""
+      def toCyph(terminateObj: Boolean = false) =
+        raw""" ${s._1} : ${s._2.fold("null")(s => s.toString)}${if (
+          !terminateObj
+        ) ","
+        else ""}"""
+    }
+
+    implicit class KVConversionList(s: (String, List[String])) {
+      val start = raw"""""${s._1}":["""
+      val end = """]"""
+      val arrayStr = s._2.mkString(start, ",", end)
+      def toCyph(terminateObj: Boolean = false) =
+        raw"""$arrayStr ${if (!terminateObj) "," else ""}"""
     }
 
   }
